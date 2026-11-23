@@ -102,8 +102,8 @@ Do not start implementing as part of this skill. The spec is cheap to change now
 
 ## Emitting the plan as beads
 
-When asked for beads, a plan file, or "a plan I can load", or when the input is
-an `# AI TASK CONTEXT` file, deliver the plan in a form the Beads issue tracker
+When asked for beads, a plan file, or "a plan I can load", or when the input
+starts with `# RELAY TURN`, deliver the plan in a form the Beads issue tracker
 (`bd`) can load, so each task becomes a tracked issue with its dependencies.
 
 Produce two files:
@@ -137,6 +137,6 @@ Produce two files:
   sees that bead and the repository, not this conversation.
 - The file must be valid JSON. Escape newlines inside strings as `\n`.
 
-If the context file has a Response format section, send both files in that
-format. Otherwise give each file in its own code block. The person loads the
-plan with `ai-task plan plans/<slug>.plan.json` after reviewing it.
+If the input is a relay turn, write both files with the write_file tool, then
+call finish. Otherwise give each file in its own code block. The person loads
+the plan with `relay plan plans/<slug>.plan.json` after reviewing it.

@@ -93,12 +93,12 @@ Be specific and neutral. Write about the code, not the author. Say what is good 
 
 Do not approve, merge, push changes, or post comments on the pull request unless the person asked you to take that action.
 
-## Reviewing from an ai-task context file
+## Reviewing through the relay harness
 
-If the input starts with `# AI TASK CONTEXT`, it was produced by a local packing
-tool. The task and its acceptance criteria are at the top, the current files
-follow, and the change under review is in the diff sections near the end.
-Review the diff against the task, use the full files for context, and reply
-with the normal report. Commits titled "model output (unreviewed)" were written
-by a model and applied without human edits, so give the AI-generated code pass
-full attention.
+If the input starts with `# RELAY TURN`, you are reviewing through a local
+harness and act by requesting tools, as its Protocol section describes. Use
+git_diff with the base branch named in the task to see the change, and
+read_file for surrounding code. Do not write files. Put the full review report
+in the body of the finish call. Commits titled "model output (unreviewed)" were
+written by a model and applied without human edits, so give the AI-generated
+code pass full attention.

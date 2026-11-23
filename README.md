@@ -19,32 +19,38 @@ it works from pasted material and states that nothing was executed.
 
 ```
 skills/<name>/SKILL.md      one folder per skill; folder name = skill name
-bin/ai-task                 manual agent loop: pack context, apply replies, check, record
-docs/manual-loop.md         how the loop works and what it will not do
+relay/                      the harness: core loop, drivers, tools, policy, trace
+bin/relay                   run the harness from a clone
+docs/harness.md             how the harness works and how to extend it
 docs/trial-packer-ami.md    a first project to try it on
-scripts/validate.py         checks names, descriptions and size limits
+tests/                      python3 -m unittest discover -s tests
+scripts/validate.py         checks skill names, descriptions and size limits
 scripts/package.sh          builds dist/<name>.zip for upload
 ```
 
-## No coding agent yet? Use the manual loop
+## The harness
 
-`bin/ai-task` lets a chat model do agent-style work with a person in the
-middle. It packs repository context into one file to upload, applies the files
-the model sends back on a separate branch, runs your check command, and logs
-every round. Tasks are [Beads](https://github.com/steveyegge/beads) issues when
-`bd` is installed, so plans load as a dependency graph and `ai-task next` picks
-up whatever is ready.
+`relay` is a small agent loop in Python (standard library only). The model
+requests tools; the harness applies policy, runs them against the repository,
+and returns the results. How a turn reaches the model is a pluggable driver:
+
+- **manual**: you paste each turn into a chat window and bring the reply back.
+  This is the one to use when all you have is a model in a browser.
+- **command**: any CLI or script that wraps a model, so the loop runs on its
+  own.
+
+Tools, policy, skills, tasks ([Beads](https://github.com/steveyegge/beads)) and
+the trace are the same for every driver, so work done by hand carries over when
+a direct model connection becomes available.
 
 ```bash
-ai-task next                # claim the next ready bead
-ai-task pack                # write context.md, upload it with /implement-with-tests
-ai-task apply --paste       # apply the reply's code block on branch ai/<id>
-ai-task check               # run your checks
-ai-task feedback --copy     # on failure: paste this back into the chat
-ai-task done                # on success, after you review and merge
+relay init
+relay start --next --skill implement-with-tests
+relay step --paste          # repeat until the model finishes
+relay close
 ```
 
-See [docs/manual-loop.md](docs/manual-loop.md), and
+See [docs/harness.md](docs/harness.md), and
 [docs/trial-packer-ami.md](docs/trial-packer-ami.md) for a worked first project.
 
 ## Use in the Gemini Enterprise web app
