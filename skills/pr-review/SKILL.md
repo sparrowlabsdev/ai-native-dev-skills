@@ -92,3 +92,13 @@ Severity guide:
 Be specific and neutral. Write about the code, not the author. Say what is good when something is done notably well; it tells the author what to keep doing. If there are no blocking findings, say so plainly and approve. Inventing findings to look thorough makes the review less useful.
 
 Do not approve, merge, push changes, or post comments on the pull request unless the person asked you to take that action.
+
+## Reviewing from an ai-task context file
+
+If the input starts with `# AI TASK CONTEXT`, it was produced by a local packing
+tool. The task and its acceptance criteria are at the top, the current files
+follow, and the change under review is in the diff sections near the end.
+Review the diff against the task, use the full files for context, and reply
+with the normal report. Commits titled "model output (unreviewed)" were written
+by a model and applied without human edits, so give the AI-generated code pass
+full attention.

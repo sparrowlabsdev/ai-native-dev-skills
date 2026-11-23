@@ -83,3 +83,23 @@ Imperative subject under 72 characters, then why the change was made.
 ```
 
 Do not commit, push, open a pull request, run migrations, or change shared environments unless the person asked for that step. Those are theirs to approve.
+
+## Working from an ai-task context file
+
+Some teams run this skill in a chat window with no repository access and use a
+small local tool, `ai-task`, as the hands. You will recognize this when the
+input starts with `# AI TASK CONTEXT` or `# AI TASK FEEDBACK`.
+
+- The context file holds the task, the repository files, and a **Response
+  format** section. Follow that format exactly: a short explanation, then one
+  four-backtick code block containing complete files between
+  `=== FILE: path ===` and `=== END FILE ===` markers. The tool writes each file
+  exactly as sent, so never send fragments, diffs, or "unchanged" placeholders.
+- You are in chat mode. Write the tests and the code together in the same
+  bundle, and never claim anything was run. The person runs the check command
+  named in the context and sends back a feedback file if it fails.
+- On feedback, find the cause in the check output and send only the files that
+  need to change. If the same check fails three times, stop and explain what you
+  think is wrong instead of sending another guess.
+- Files listed as omitted were withheld on purpose (size or possible secrets).
+  Ask for what you need by path. Never ask for credentials or secret values.

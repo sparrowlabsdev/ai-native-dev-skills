@@ -18,10 +18,34 @@ it works from pasted material and states that nothing was executed.
 ## Layout
 
 ```
-skills/<name>/SKILL.md   one folder per skill; folder name = skill name
-scripts/validate.py      checks names, descriptions and size limits
-scripts/package.sh       builds dist/<name>.zip for upload
+skills/<name>/SKILL.md      one folder per skill; folder name = skill name
+bin/ai-task                 manual agent loop: pack context, apply replies, check, record
+docs/manual-loop.md         how the loop works and what it will not do
+docs/trial-packer-ami.md    a first project to try it on
+scripts/validate.py         checks names, descriptions and size limits
+scripts/package.sh          builds dist/<name>.zip for upload
 ```
+
+## No coding agent yet? Use the manual loop
+
+`bin/ai-task` lets a chat model do agent-style work with a person in the
+middle. It packs repository context into one file to upload, applies the files
+the model sends back on a separate branch, runs your check command, and logs
+every round. Tasks are [Beads](https://github.com/steveyegge/beads) issues when
+`bd` is installed, so plans load as a dependency graph and `ai-task next` picks
+up whatever is ready.
+
+```bash
+ai-task next                # claim the next ready bead
+ai-task pack                # write context.md, upload it with /implement-with-tests
+ai-task apply --paste       # apply the reply's code block on branch ai/<id>
+ai-task check               # run your checks
+ai-task feedback --copy     # on failure: paste this back into the chat
+ai-task done                # on success, after you review and merge
+```
+
+See [docs/manual-loop.md](docs/manual-loop.md), and
+[docs/trial-packer-ami.md](docs/trial-packer-ami.md) for a worked first project.
 
 ## Use in the Gemini Enterprise web app
 

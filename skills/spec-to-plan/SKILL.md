@@ -99,3 +99,44 @@ Finish with a traceability check: every acceptance criterion is covered by at le
 End by stating what needs a human decision before work starts (open questions, risky assumptions, anything that changes data or public interfaces). If asked to proceed, hand tasks to implementation one at a time, in order.
 
 Do not start implementing as part of this skill. The spec is cheap to change now and expensive to change after code exists, so give the person the chance to correct it.
+
+## Emitting the plan as beads
+
+When asked for beads, a plan file, or "a plan I can load", or when the input is
+an `# AI TASK CONTEXT` file, deliver the plan in a form the Beads issue tracker
+(`bd`) can load, so each task becomes a tracked issue with its dependencies.
+
+Produce two files:
+
+1. `docs/specs/<slug>.md`: the spec, as written above.
+2. `plans/<slug>.plan.json`: the task plan, in this shape:
+
+```json
+{
+  "nodes": [
+    {
+      "key": "t1",
+      "title": "Imperative title under 70 characters",
+      "type": "task",
+      "priority": 1,
+      "description": "Goal, files, steps and tests for this task. Self-contained.",
+      "acceptance_criteria": "The command to run and the result that proves it."
+    }
+  ],
+  "edges": [
+    { "from_key": "t2", "to_key": "t1", "type": "blocks" }
+  ]
+}
+```
+
+- An edge means `from_key` cannot start until `to_key` is done.
+- `priority` runs from 0 (highest) to 4. Use it to put risky work first.
+- `type` is one of task, bug, feature, chore, spike. Use a spike for a question
+  that must be answered before the design is safe.
+- Each description must stand alone: the person or model picking up the task
+  sees that bead and the repository, not this conversation.
+- The file must be valid JSON. Escape newlines inside strings as `\n`.
+
+If the context file has a Response format section, send both files in that
+format. Otherwise give each file in its own code block. The person loads the
+plan with `ai-task plan plans/<slug>.plan.json` after reviewing it.
